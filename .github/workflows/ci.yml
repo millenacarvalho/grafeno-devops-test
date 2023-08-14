@@ -18,6 +18,17 @@ jobs:
             with:
                  username: ${{ secrets.DOCKER_USERNAME }}
                  password: ${{ secrets.DOCKER_PASSWORD }}
+
+          - name: Run SAST
+            uses: anchore/scan-action@v3
+            id: scan
+
+          - name: Run Trivy vulnerability
+            uses: aquasecurity/trivy-action@master
+            with:
+                  image-ref: ${{ secrets.DOCKER_USERNAME }}/devops-survivor:latest
+                  exit-code: '1'
+
           - name: Build and push
             uses: docker/build-push-action@v4
             with:
